@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente Touristta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A84C;--gold2:#8B6914;--dark:#0A0A0A;--dark2:#111;--dark3:#1A1A1A;--border:#2A2A2A}
+body{background:var(--dark);color:#E8D5A3;font-family:'Montserrat',sans-serif;min-height:100vh}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{50%{opacity:0}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#C9A84C44;border-radius:2px}
+.wrap{max-width:860px;margin:0 auto;padding:28px 16px 80px}
+.header{text-align:center;margin-bottom:40px}
+.header-sub{font-size:10px;letter-spacing:6px;color:var(--gold);font-weight:300;margin-bottom:14px}
+.header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6vw,48px);font-weight:300;color:#F0E0B0;letter-spacing:2px;line-height:1.2;margin-bottom:10px}
+.header-tagline{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--gold);font-style:italic;font-weight:300}
+.divider{width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:18px auto 0}
+.section-label{font-size:10px;letter-spacing:4px;color:#555;margin-bottom:12px}
+.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:24px}
+.mode-btn{background:#111;border:1px solid var(--border);border-radius:8px;padding:14px 16px;text-align:left;color:#E8D5A3;cursor:pointer;transition:all .25s;width:100%}
+.mode-btn.active{border-color:var(--gold);background:#1A1408}
+.mode-btn.active .mode-label{color:var(--gold)}
+.mode-icon{font-size:22px;margin-bottom:6px}
+.mode-label{font-weight:600;font-size:12px;color:#AAA;margin-bottom:3px}
+.mode-desc{font-size:10px;color:#555}
+.config{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.config-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.field-label{display:block;font-size:10px;letter-spacing:3px;color:#555;margin-bottom:8px}
+select,input,textarea{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:#E8D5A3;font-size:13px;font-family:'Montserrat',sans-serif;outline:none}
+select:focus,input:focus,textarea:focus{border-color:#C9A84C88}
+textarea{resize:vertical;line-height:1.6}
+.lang-row{display:flex;gap:6px}
+.lang-btn{flex:1;padding:10px 4px;border-radius:6px;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:400;background:var(--dark3);color:#666;border:2px solid var(--border);cursor:pointer;transition:background .2s,color .2s,border-color .2s,font-weight .2s}
+.lang-btn.active{background:#1A1408 !important;color:var(--gold) !important;border-color:var(--gold) !important;font-weight:700 !important}
+.lang-indicator{font-size:11px;color:#555;text-align:right;margin-bottom:14px}
+.lang-indicator b{color:var(--gold);font-weight:600}
+#custom-loc-wrap{margin-bottom:16px;display:none}
+.gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold2),var(--gold),var(--gold2));border:1px solid var(--gold);border-radius:8px;color:#0A0A0A;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;margin-bottom:28px;cursor:pointer;transition:all .3s}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;background:#1A1408 !important;color:var(--gold) !important}
+.error-box{background:#1A0A0A;border:1px solid #5C1A1A;border-radius:8px;padding:16px;margin-bottom:20px;color:#FF7070;font-size:13px;display:none}
+.result-box{background:var(--dark2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px;animation:fadeIn .4s ease;display:none}
+.result-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#0F0F0F}
+.result-meta{display:flex;align-items:center;gap:10px}
+.result-title{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px}
+.result-sub{font-size:10px;color:#555}
+.copy-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 14px;color:#888;font-family:'Montserrat',sans-serif;font-size:11px;cursor:pointer;transition:all .3s}
+.copy-btn.copied{background:#1A2A1A;border-color:#4CAF50;color:#4CAF50}
+.result-body{padding:20px;max-height:480px;overflow-y:auto;line-height:1.8;font-size:13px;color:#D0C4A0;white-space:pre-wrap}
+.footer{margin-top:56px;text-align:center}
+.footer-line{width:40px;height:1px;background:linear-gradient(to right,transparent,#C9A84C44,transparent);margin:0 auto 16px}
+.footer-text{font-size:10px;color:#333;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-sub">MARCOS AURELIO GONZAGA · TOURISTTA ECOSYSTEM</div>
+    <h1>Agente de Conteúdo</h1>
+    <div class="header-tagline">O Rio Que Ninguém Te Contou</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="section-label">MÓDULO DE GERAÇÃO</div>
+  <div class="modes">
+    <button class="mode-btn active" data-mode="roteiro">
+      <div class="mode-icon">🎬</div>
+      <div class="mode-label">Roteiro YouTube</div>
+      <div class="mode-desc">Roteiro completo para vídeo</div>
+    </button>
+    <button class="mode-btn" data-mode="descricao">
+      <div class="mode-icon">📝</div>
+      <div class="mode-label">Descrição & SEO</div>
+      <div class="mode-desc">Título, descrição e tags</div>
+    </button>
+    <button class="mode-btn" data-mode="card">
+      <div class="mode-icon">🗺️</div>
+      <div class="mode-label">Card Touristta</div>
+      <div class="mode-desc">Conteúdo para o app</div>
+    </button>
+    <button class="mode-btn" data-mode="estrategia">
+      <div class="mode-icon">📊</div>
+      <div class="mode-label">Estratégia de Canal</div>
+      <div class="mode-desc">Pauta e ideias de vídeos</div>
+    </button>
+  </div>
+
+  <div class="config">
+    <div class="config-row">
+      <div>
+        <label class="field-label">LOCALIZAÇÃO</label>
+        <select id="location">
+          <option>Cristo Redentor</option>
+          <option>Pedra da Gávea</option>
+          <option>Arpoador</option>
+          <option>Santa Teresa</option>
+          <option>Pão de Açúcar</option>
+          <option>Lapa</option>
+          <option>Ipanema</option>
+          <option>Copacabana</option>
+          <option>Urca</option>
+          <option>Jardim Botânico</option>
+          <option>Outro (digitar abaixo)</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">IDIOMA</label>
+        <div class="lang-row">
+          <button class="lang-btn active" data-lang="Português">Português</button>
+          <button class="lang-btn" data-lang="English">English</button>
+          <button class="lang-btn" data-lang="Español">Español</button>
+        </div>
+      </div>
+    </div>
+    <div id="custom-loc-wrap">
+      <input type="text" id="custom-loc" placeholder="Digite o local ou tema do vídeo...">
+    </div>
+    <div>
+      <label class="field-label">CONTEXTO ADICIONAL <span style="color:#333">(opcional)</span></label>
+      <textarea id="extra" rows="2" placeholder="Ex: focar no pôr do sol, público internacional, tom mais misterioso..."></textarea>
+    </div>
+  </div>
+
+  <div class="lang-indicator">Idioma selecionado: <b id="lang-display">Português</b></div>
+
+  <button class="gen-btn" id="gen-btn">✦ GERAR ROTEIRO YOUTUBE ✦</button>
+
+  <div class="error-box" id="error-box"></div>
+
+  <div class="result-box" id="result-box">
+    <div class="result-header">
+      <div class="result-meta">
+        <span id="result-icon" style="font-size:18px">🎬</span>
+        <div>
+          <div class="result-title" id="result-title">ROTEIRO YOUTUBE</div>
+          <div class="result-sub" id="result-sub"></div>
+        </div>
+      </div>
+      <button class="copy-btn" id="copy-btn">Copiar</button>
+    </div>
+    <div class="result-body" id="result-body"></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-line"></div>
+    <div class="footer-text">OLHAR TOURISTTA · MARCOS AURELIO GONZAGA · marcosagonzaga44@gmail.com</div>
+  </div>
+
+</div>
+
+<script>
+const MODES = {
+  roteiro:    { icon:'🎬', label:'Roteiro YouTube',     prompt:(loc,lang)=>`Você é roteirista de turismo de luxo para YouTube. Idioma de resposta: ${lang}. Crie roteiro cinematográfico para "${loc}" com: 1.GANCHO INICIAL (0-15s) 2.INTRODUÇÃO (15-45s) 3.HISTÓRIA & MISTÉRIO 4.EXPERIÊNCIA SENSORIAL 5.O QUE NINGUÉM TE CONTA 6.CALL TO ACTION (mencione app Touristta) 7.10 HASHTAGS. Tom narrativo, luxuoso, sem clichês.` },
+  descricao:  { icon:'📝', label:'Descrição & SEO',     prompt:(loc,lang)=>`Você é especialista em SEO para YouTube de turismo. Idioma de resposta: ${lang}. Para "${loc}" gere: 1. 5 OPÇÕES DE TÍTULO (máx 70 chars, emoji) 2. DESCRIÇÃO COMPLETA (300 palavras, mencione app Touristta) 3. PRIMEIRAS 2 LINHAS (hook) 4. 30 TAGS otimizadas 5. HORÁRIO IDEAL DE PUBLICAÇÃO.` },
+  card:       { icon:'🗺️', label:'Card Touristta',      prompt:(loc,lang)=>`Você é curador do app Olhar Touristta, app GPS de luxo sobre Rio de Janeiro. Idioma de resposta: ${lang}. Para "${loc}" crie: 1.TÍTULO DO CARD (máx 40 chars) 2.SUBTÍTULO de mistério (máx 80 chars) 3.HISTÓRIA PRINCIPAL (250 palavras) 4.FATO MISTERIOSO 5.MELHOR HORÁRIO PARA VISITAR 6.DICA INSIDER 7.SCRIPT DE NARRAÇÃO (60 palavras).` },
+  estrategia: { icon:'📊', label:'Estratégia de Canal', prompt:(loc,lang)=>`Você é estrategista de conteúdo para canal de turismo de luxo no YouTube. Idioma de resposta: ${lang}. Para o tema "${loc}" gere: 1.ANÁLISE DE OPORTUNIDADE 2. 10 IDEIAS DE VÍDEOS com títulos 3.SÉRIE SUGERIDA (3-5 episódios) 4.PÚBLICO-ALVO 5.PARCEIROS POTENCIAIS 6.MONETIZAÇÃO além do YouTube 7.CONCEITO DE THUMBNAIL.` },
+};
+
+let currentMode = 'roteiro';
+let currentLang = 'Português';
+let fullText = '';
+let typeInterval = null;
+
+// Mode buttons
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    currentMode = this.dataset.mode;
+    document.getElementById('gen-btn').textContent = '✦ GERAR ' + MODES[currentMode].label.toUpperCase() + ' ✦';
+  });
+});
+
+// Language buttons
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    currentLang = this.dataset.lang;
+    document.getElementById('lang-display').textContent = currentLang;
+  });
+});
+
+// Location select
+document.getElementById('location').addEventListener('change', function() {
+  document.getElementById('custom-loc-wrap').style.display =
+    this.value === 'Outro (digitar abaixo)' ? 'block' : 'none';
+});
+
+// Copy button
+document.getElementById('copy-btn').addEventListener('click', function() {
+  navigator.clipboard.writeText(fullText);
+  this.textContent = '✓ Copiado';
+  this.classList.add('copied');
+  setTimeout(() => { this.textContent = 'Copiar'; this.classList.remove('copied'); }, 2000);
+});
+
+// Generate
+document.getElementById('gen-btn').addEventListener('click', async function() {
+  const locSel = document.getElementById('location').value;
+  const loc = locSel === 'Outro (digitar abaixo)'
+    ? document.getElementById('custom-loc').value.trim()
+    : locSel;
+  if (!loc) return;
+
+  const extra = document.getElementById('extra').value.trim();
+  const errBox = document.getElementById('error-box');
+  const resBox = document.getElementById('result-box');
+  const btn = this;
+
+  btn.disabled = true;
+  btn.textContent = '✦ GERANDO CONTEÚDO... ✦';
+  errBox.style.display = 'none';
+  resBox.style.display = 'none';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: MODES[currentMode].prompt(loc, currentLang),
+        messages: [{ role: 'user', content: 'Local: ' + loc + (extra ? '\nContexto: ' + extra : '') }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content || []).map(b => b.text || '').join('\n');
+    fullText = text;
+
+    const m = MODES[currentMode];
+    document.getElementById('result-icon').textContent = m.icon;
+    document.getElementById('result-title').textContent = m.label.toUpperCase();
+    document.getElementById('result-sub').textContent = loc + ' · ' + currentLang;
+    document.getElementById('copy-btn').textContent = 'Copiar';
+    document.getElementById('copy-btn').classList.remove('copied');
+    resBox.style.display = 'block';
+
+    // Typewriter
+    const el = document.getElementById('result-body');
+    el.textContent = '';
+    let i = 0;
+    if (typeInterval) clearInterval(typeInterval);
+    typeInterval = setInterval(() => {
+      if (i < text.length) { el.textContent = text.slice(0, i + 1); i++; }
+      else clearInterval(typeInterval);
+    }, 6);
+
+    resBox.scrollIntoView({ behavior: 'smooth' });
+
+  } catch(e) {
+    errBox.textContent = 'Erro ao conectar. Verifique sua conexão e tente novamente.';
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✦ GERAR ' + MODES[currentMode].label.toUpperCase() + ' ✦';
+  }
+});
+</script>
+</body>
+</html>
